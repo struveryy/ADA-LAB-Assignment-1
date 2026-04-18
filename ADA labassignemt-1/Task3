@@ -1,0 +1,103 @@
+import time
+
+factorial_calls = 0
+fib_naive_calls = 0
+fib_dp_calls = 0
+
+def factorial(n):
+    global factorial_calls
+    factorial_calls += 1
+    if n == 0:
+        return 1
+    return n * factorial(n - 1)
+
+def fib_naive(n):
+    global fib_naive_calls
+    fib_naive_calls += 1
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    return fib_naive(n - 1) + fib_naive(n - 2)
+
+def fib_dp(n):
+    global fib_dp_calls
+    fib_dp_calls += 1
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    # Using memoization (top-down DP)
+    memo = {}
+    def fib_memo(k):
+        global fib_dp_calls
+        fib_dp_calls += 1
+        if k in memo:
+            return memo[k]
+        if k == 0:
+            return 0
+        if k == 1:
+            return 1
+        memo[k] = fib_memo(k - 1) + fib_memo(k - 2)
+        return memo[k]
+    return fib_memo(n)
+
+# Function to measure time and calls
+def measure_algorithm(alg, n, reset_calls):
+    global factorial_calls, fib_naive_calls, fib_dp_calls
+    if reset_calls == 'factorial':
+        factorial_calls = 0
+    elif reset_calls == 'fib_naive':
+        fib_naive_calls = 0
+    elif reset_calls == 'fib_dp':
+        fib_dp_calls = 0
+    
+    start_time = time.time()
+    result = alg(n)
+    end_time = time.time()
+    execution_time = end_time - start_time
+    
+    if reset_calls == 'factorial':
+        calls = factorial_calls
+    elif reset_calls == 'fib_naive':
+        calls = fib_naive_calls
+    elif reset_calls == 'fib_dp':
+        calls = fib_dp_calls
+    
+    return result, calls, execution_time
+
+# Test inputs
+inputs = [5, 10, 15, 20, 25, 30]
+
+print("Factorial Results:")
+print("n\tResult\tCalls\tTime (s)")
+for n in inputs:
+    if n <= 20:  # Factorial grows fast, limit to avoid overflow
+        result, calls, exec_time = measure_algorithm(factorial, n, 'factorial')
+        print(f"{n}\t{result}\t{calls}\t{exec_time:.6f}")
+
+print("\nFibonacci Naïve Recursive Results:")
+print("n\tResult\tCalls\tTime (s)")
+for n in inputs:
+    if n <= 30:  # Naïve fib is exponential, limit n
+        result, calls, exec_time = measure_algorithm(fib_naive, n, 'fib_naive')
+        print(f"{n}\t{result}\t{calls}\t{exec_time:.6f}")
+
+print("\nFibonacci Dynamic Programming Results:")
+print("n\tResult\tCalls\tTime (s)")
+for n in inputs:
+    result, calls, exec_time = measure_algorithm(fib_dp, n, 'fib_dp')
+    print(f"{n}\t{result}\t{calls}\t{exec_time:.6f}")
+
+# Comparison Table
+print("\nComparison Table (for n=20):")
+n = 20
+fact_result, fact_calls, fact_time = measure_algorithm(factorial, n, 'factorial')
+naive_result, naive_calls, naive_time = measure_algorithm(fib_naive, n, 'fib_naive')
+dp_result, dp_calls, dp_time = measure_algorithm(fib_dp, n, 'fib_dp')
+
+print("| Algorithm | Result | Function Calls | Execution Time (s) |")
+print("|-----------|--------|----------------|---------------------|")
+print(f"| Factorial | {fact_result} | {fact_calls} | {fact_time:.6f} |")
+print(f"| Fib Naïve | {naive_result} | {naive_calls} | {naive_time:.6f} |")
+print(f"| Fib DP    | {dp_result} | {dp_calls} | {dp_time:.6f} |")

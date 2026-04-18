@@ -1,0 +1,61 @@
+import time
+import matplotlib.pyplot as plt
+def constant_time(n):
+    return n * 5
+
+def linear_time(n):
+    total = 0
+    for i in range(n):
+        total += i
+    return total
+def quadratic_time(n):
+    total = 0
+    for i in range(n):
+        for j in range(n):
+            total += i + j
+    return total
+
+def logarithmic_time(n):
+    while n > 1:
+        n = n // 2
+    return n
+
+input_sizes = [100, 500, 1000, 2000]
+
+constant_times = []
+linear_times = []
+quadratic_times = []
+logarithmic_times = []
+
+for n in input_sizes:
+
+    start = time.perf_counter()
+    constant_time(n)
+    constant_times.append(time.perf_counter() - start)
+
+    start = time.perf_counter()
+    linear_time(n)
+    linear_times.append(time.perf_counter() - start)
+
+    start = time.perf_counter()
+    logarithmic_time(n)
+    logarithmic_times.append(time.perf_counter() - start)
+
+    start = time.perf_counter()
+    quadratic_time(n)
+    quadratic_times.append(time.perf_counter() - start)
+
+plt.figure(figsize=(8,5))
+
+plt.plot(input_sizes, constant_times, marker='o', label="O(1)")
+plt.plot(input_sizes, linear_times, marker='o', label="O(n)")
+plt.plot(input_sizes, logarithmic_times, marker='o', label="O(log n)")
+plt.plot(input_sizes, quadratic_times, marker='o', label="O(n^2)")
+
+plt.xlabel("Input Size (n)")
+plt.ylabel("Execution Time (seconds)")
+plt.title("Algorithm Growth Comparison")
+plt.legend()
+plt.grid(True)
+
+plt.show()             

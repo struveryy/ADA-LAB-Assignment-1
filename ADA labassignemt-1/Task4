@@ -1,0 +1,42 @@
+import time
+count_T1 = 0
+count_T2 = 0
+def T1(n):
+    global count_T1
+    count_T1 += 1
+    
+    if n <= 1:
+        return 1
+    return T1(n // 2) + n
+def T2(n):
+    global count_T2
+    count_T2 += 1
+    
+    if n <= 1:
+        return 1
+    return 2 * T2(n // 2) + n
+input_sizes = [10, 100, 500, 1000]
+print("Recurrence: T(n) = T(n/2) + n\n")
+
+for n in input_sizes:
+    count_T1 = 0
+    start = time.time()
+    T1(n)
+    end = time.time()
+    
+    print("n =", n)
+    print("Recursive Calls:", count_T1)
+    print("Execution Time:", end - start)
+    print()
+print("Recurrence: T(n) = 2T(n/2) + n\n")
+
+for n in input_sizes:
+    count_T2 = 0
+    start = time.time()
+    T2(n)
+    end = time.time()
+    
+    print("n =", n)
+    print("Recursive Calls:", count_T2)
+    print("Execution Time:", end - start)
+    print()
